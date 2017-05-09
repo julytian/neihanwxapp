@@ -1,0 +1,116 @@
+<view class="nav">
+    <view class="item {{searchKeys.content_type==-101?'active':''}}" data-type="-101" catchtap="onSwitchTap">推荐</view>
+    <view class="item {{searchKeys.content_type==-104?'active':''}}" data-type="-104" catchtap="onSwitchTap">视频</view>
+    <view class="item {{searchKeys.content_type==-102?'active':''}}" data-type="-102" catchtap="onSwitchTap">段子</view>
+    <view class="item {{searchKeys.content_type==-103?'active':''}}" data-type="-103" catchtap="onSwitchTap">图片</view>
+    <view class="item {{searchKeys.content_type==-301?'active':''}}" data-type="-301" catchtap="onFriendShow">段友秀</view>
+</view>
+<view class="content">
+    <scroll-view style="height:100%;" scroll-top="40" scroll-with-animation="true" scroll-y="true" lower-threshold="100" scroll-into-view="{{scrollTopView}}" bindscrolltolower="onScrollToLower">
+        <view id="scrollTop" style="height:80rpx;"></view>
+        <view class="info-tip" hidden="{{!tipShow}}">
+            {{tip}}
+        </view>
+        <view class="detail-list {{searchKeys.content_type==-301?'list-column__wrapper':''}}">
+            <block wx:for="{{jokes}}" wx:if="{{item.group}}" wx:key="{{item.group.id}}">
+                <view wx:if="{{!(searchKeys.content_type==-301)}}" class="list-item" data-detail="{{item.group}}" bindtap="onGoDetail">
+                    <!-- 用户信息 -->
+                    <view class="hd" style="padding-left:{{item.group.is_neihan_hot?'0':'20rpx'}};">
+                        <view class="hot-wrap" wx:if="{{item.group.is_neihan_hot}}">
+                            <text>热门</text>
+                        </view>
+                        <image class="avatar" src="{{item.group.user.avatar_url}}"></image>
+                        <view class="username">
+                            {{item.group.user.name}}
+                        </view>
+                    </view>
+                    <!-- 内容 -->
+                    <view class="bd">
+
+                        <view class="text-wrapper">
+                            {{item.group.content}}
+                            <view class="bar-link">{{item.group.category_name}}</view>
+                        </view>
+
+                        <!-- video 假如有视频存在-->
+                        <view class="video-wrapper" wx:if="{{item.group.is_video && item.group.is_video == 1}}">
+                            <image mode="widthFix" class="video-thumb" src="{{item.group.videoCover}}"></image>
+                            <view class="play-icon"></view>
+                            <view class="video-desc">
+                                <view class="play-count">
+                                    <text class="num">{{item.group.play_count}}</text> 次播放
+                                </view>
+                                <view class="play-duration">
+                                    <text>{{item.group.duration}}</text>
+                                </view>
+                            </view>
+                        </view>
+
+                        <!-- gif爆笑囧图 一张图片 -->
+                        <view class="preview-wrapper" wx:if="{{item.group.is_gif && item.group.is_gif == 1}}" data-current="{{item.group.gifVideoCoverL}}" data-urls="{{item.group.gifVideoCoverL}}" catchtap="onPreviewImage">
+                            <image class="preview-img" src="{{item.group.gifVideoCoverM}}" mode="widthFix" binderror="onImageError" data-err-img="item.group.middle_image.url_list['1'].url"></image>
+                            <view class="preview-icon"></view>
+                        </view>
+
+                        <!-- 爆笑囧图 一张图片 -->
+                        <view class="preview-wrapper" wx:if="{{item.group.media_type && item.group.media_type == 1}}" data-current="{{item.group.previewOne}}" data-urls="{{item.group.previewOne}}" catchtap="onPreviewImage">
+                            <image class="preview-img" src="{{item.group.previewOne}}" mode="widthFix" binderror="onImageError" data-err-img="item.group.middle_image.url_list['1'].url"></image>
+                            <view class="long-img" wx:if="{{item.group.middle_image.r_height>500}}">
+                                <text class="long-text">点击查看长图</text>
+                            </view>
+                        </view>
+
+                        <!-- 爆笑囧图 多张图片 -->
+                        <view class="thumb-wrapper" wx:if="{{item.group.thumb_image_list}}">
+                            <block wx:for="{{item.group.thumb_image_list}}" wx:for-item="thumb" wx:for-index="thumbIndex" wx:key="{{thumb.url}}">
+                                <image mode="widthFix" class="thumb-item {{thumb.is_gif?'is_gif':''}}" src="{{thumb.url}}" data-current="{{item.group.large_image_list[thumbIndex].url}}" data-urls="{{item.group.large_image_list}}" catchtap="onPreviewImage" binderror="onImageError" data-err-img="item.group.middle_image_list[thumbIndex].url"></image>
+                            </block>
+                        </view>
+                    </view>
+                    <!-- footer 点赞评论分享 -->
+                    <view class="ft bdr-top bdr-bottom">
+                        <view class="btn btn-digg bdr-r">
+                            <text class="btn-text">{{item.group.digg_count}}</text>
+                        </view>
+                        <view class="btn btn-bury bdr-r">
+                            <text class="btn-text">{{item.group.bury_count}}</text>
+                        </view>
+                        <view class="btn btn-comment bdr-r">
+                            <text class="btn-text">{{item.group.comment_count}}</text>
+                        </view>
+                        <view class="btn btn-share">
+                            <text class="btn-text">{{item.group.share_count}}</text>
+                        </view>
+                    </view>
+                    <!--<view class="god-comments-wrapper"></view>-->
+                </view>
+                <block wx:if="{{searchKeys.content_type==-301}}" data-detail="{{item.group}}" bindtap="onGoDetail">
+                    <view class="item-column" wx:if="{{item.group.is_video && item.group.is_video == 1}}">
+                        <image mode="aspectFill" class="col-img" src="{{item.group.videoCover}}"></image>
+                        <view class="col-ft">
+                            <image class="col-avatar" src="{{item.group.user.avatar_url}}"></image>
+                            <view class="col-username">
+                                {{item.group.user.name}}
+                            </view>
+                            <view class="col-like">
+                                <text class="col-like__num">{{item.group.digg_count}}</text>
+                                <text class="col-like__btn"></text>
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </block>
+        </view>
+        <!-- 加载更多 -->
+        <view class="loadMore" hidden="{{!loadMore}}">
+            <view></view>
+            <view></view>
+            <view></view>
+            <view></view>
+            <view></view> 数据加载中...
+        </view>
+    </scroll-view>
+    <view class="refresh-btn-wrapper" catchtap="onGoTopAndRefresh">
+        <view class="refresh-btn {{refreshFlag?'spinner':''}}"></view>
+    </view>
+</view>
