@@ -187,5 +187,12 @@ Page({
         wx.navigateTo({
             url: '../detail/detail?groupid=' + groupid
         });
+    },
+    onShareAppMessage: function() {
+        // 用户点击右上角分享
+        return {
+            title: '内涵段子,以内涵会友',
+            path: '/page/index/index'
+        }
     }
 })
