@@ -1,6 +1,6 @@
 # 内涵段子微信小程序
 
-内涵段子微信小程序,一个放松自己的娱乐小程序
+内涵段子微信小程序,一个放松自己的娱乐小程序，更多详情前往[微信小程序联盟](http://www.wxapp-union.com/forum.php?mod=viewthread&tid=5080&extra=page%3D1)
 
 ## 代码结构
 
