@@ -21,7 +21,7 @@ Page({
             ac: "wifi", // 网络环境，可取值 wifi
             screen_width: "750", // 屏幕宽度，px为单位
             device_id: "35453050449",
-            aid: "7", // 固定值7
+            aid: 7, // 固定值7
             city: "广州",
             count: 30, // 返回数量
             double_col_mode: 0,
@@ -183,8 +183,9 @@ Page({
         app.setGlobalData({
             detail: detail
         });
-        // wx.navigateTo({
-        //     url: '../detail/detail'
-        // });
+        let groupid = detail.group.group_id;
+        wx.navigateTo({
+            url: '../detail/detail?groupid=' + groupid
+        });
     }
 })

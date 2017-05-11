@@ -13,7 +13,7 @@
         </view>
         <view class="detail-list {{searchKeys.content_type==-301?'list-column__wrapper':''}}">
             <block wx:for="{{jokes}}" wx:if="{{item.group}}" wx:key="{{item.group.id}}">
-                <view wx:if="{{!(searchKeys.content_type==-301)}}" class="list-item" data-detail="{{item.group}}" bindtap="onGoDetail">
+                <view wx:if="{{!(searchKeys.content_type==-301)}}" class="list-item" data-detail="{{item}}" bindtap="onGoDetail">
                     <!-- 用户信息 -->
                     <view class="hd" style="padding-left:{{item.group.is_neihan_hot?'0':'20rpx'}};">
                         <view class="hot-wrap" wx:if="{{item.group.is_neihan_hot}}">
@@ -29,7 +29,7 @@
 
                         <view class="text-wrapper">
                             {{item.group.content}}
-                            <view class="bar-link">{{item.group.category_name}}</view>
+                            <view class="bar-link" wx:if="{{item.group.category_name.length>0}}">{{item.group.category_name}}</view>
                         </view>
 
                         <!-- video 假如有视频存在-->
@@ -84,8 +84,8 @@
                     </view>
                     <!--<view class="god-comments-wrapper"></view>-->
                 </view>
-                <block wx:if="{{searchKeys.content_type==-301}}" data-detail="{{item.group}}" bindtap="onGoDetail">
-                    <view class="item-column" wx:if="{{item.group.is_video && item.group.is_video == 1}}">
+                <block wx:if="{{searchKeys.content_type==-301}}">
+                    <view class="item-column" wx:if="{{item.group.is_video && item.group.is_video == 1}}" data-detail="{{item}}" bindtap="onGoDetail">
                         <image mode="aspectFill" class="col-img" src="{{item.group.videoCover}}"></image>
                         <view class="col-ft">
                             <image class="col-avatar" src="{{item.group.user.avatar_url}}"></image>

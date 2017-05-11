@@ -1,3 +1,132 @@
 <view class="detail">
-    detail
+    <view class="detail-list">
+        <view class="list-item">
+            <!-- 视频播放 -->
+            <view class="video-player" wx:if="{{item.group.is_video && item.group.is_video == 1}}">
+                <video style="height:{{item.group.video_height}}px;" src="{{item.group.mp4_url}}" poster="{{item.group.videoCover}}" controls autoplay="true" binderror="onErrorHandle"></video>
+            </view>
+
+            <!-- 用户信息 -->
+            <view class="hd" style="padding-left:{{item.group.is_neihan_hot?'0':'20rpx'}};">
+                <view class="hot-wrap" wx:if="{{item.group.is_neihan_hot}}">
+                    <text>热门</text>
+                </view>
+                <image class="avatar" src="{{item.group.user.avatar_url}}"></image>
+                <view class="username">
+                    {{item.group.user.name}}
+                    <!-- 作品与粉丝 -->
+                    <view class="profile-wrapper">
+                        <text class="profile">{{item.group.user.ugc_count}}作品</text>
+                        <text class="follower">{{item.group.user.followers}}粉丝</text>
+                    </view>
+                </view>
+            </view>
+
+            <!-- 内容 -->
+            <view class="bd">
+
+                <view class="text-wrapper">
+                    {{item.group.content}}
+                    <view class="bar-link" wx:if="{{item.group.category_name.length>0}}">{{item.group.category_name}}</view>
+                </view>
+
+                <!-- gif爆笑囧图 一张图片 -->
+                <view class="preview-wrapper" wx:if="{{item.group.is_gif && item.group.is_gif == 1}}" data-current="{{item.group.gifVideoCoverL}}" data-urls="{{item.group.gifVideoCoverL}}" catchtap="onPreviewImage">
+                    <image class="preview-img" src="{{item.group.gifVideoCoverM}}" mode="widthFix" binderror="onImageError" data-err-img="item.group.middle_image.url_list['1'].url"></image>
+                    <view class="preview-icon"></view>
+                </view>
+
+                <!-- 爆笑囧图 一张图片 -->
+                <view class="preview-wrapper" wx:if="{{item.group.media_type && item.group.media_type == 1}}" data-current="{{item.group.previewOne}}" data-urls="{{item.group.previewOne}}" catchtap="onPreviewImage">
+                    <image class="preview-img" src="{{item.group.previewOne}}" mode="widthFix" binderror="onImageError" data-err-img="item.group.middle_image.url_list['1'].url"></image>
+                    <view class="long-img" wx:if="{{item.group.middle_image.r_height>500}}">
+                        <text class="long-text">点击查看长图</text>
+                    </view>
+                </view>
+
+                <!-- 爆笑囧图 多张图片 -->
+                <view class="thumb-wrapper" wx:if="{{item.group.thumb_image_list}}">
+                    <block wx:for="{{item.group.thumb_image_list}}" wx:for-item="thumb" wx:for-index="thumbIndex" wx:key="{{thumb.url}}">
+                        <image mode="widthFix" class="thumb-item {{thumb.is_gif?'is_gif':''}}" src="{{thumb.url}}" data-current="{{item.group.large_image_list[thumbIndex].url}}" data-urls="{{item.group.large_image_list}}" catchtap="onPreviewImage" binderror="onImageError" data-err-img="item.group.middle_image_list[thumbIndex].url"></image>
+                    </block>
+                </view>
+            </view>
+            <!-- footer 点赞评论分享 -->
+            <view class="ft bdr-top bdr-bottom">
+                <view class="btn btn-digg bdr-r">
+                    <text class="btn-text">{{item.group.digg_count}}</text>
+                </view>
+                <view class="btn btn-bury bdr-r">
+                    <text class="btn-text">{{item.group.bury_count}}</text>
+                </view>
+                <view class="btn btn-comment bdr-r">
+                    <text class="btn-text">{{item.group.comment_count}}</text>
+                </view>
+                <view class="btn btn-share">
+                    <text class="btn-text">{{item.group.share_count}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 评论 -->
+    <view class="comments-wrapper" wx:if="{{topComments.length||recentComments.length}}">
+        <!-- 热门评论 -->
+        <view class="comments" wx:if="{{topComments.length}}">
+            <view class="comments-tt">热门评论 ({{topComments.length}})</view>
+            <block wx:for="{{topComments}}" wx:key="{{item.id}}">
+                <view class="comments-item">
+                    <image class="avatar" src="{{item.avatar_url}}"></image>
+                    <view class="comments-con bdr-top">
+                        <view class="comments-hd">
+                            <view class="username">
+                                {{item.user_name}}
+                                <!-- 作品与粉丝 -->
+                                <view class="date">{{item.create_time}}</view>
+                            </view>
+                            <view class="btn btn-digg">
+                                <text class="btn-text">{{item.digg_count}}</text>
+                            </view>
+                        </view>
+                        <view class="comments-bd">
+                            {{item.text}}
+                        </view>
+                    </view>
+                </view>
+            </block>
+        </view>
+        <!-- 新鲜评论 -->
+        <view class="commments" wx:if="{{recentComments.length}}">
+            <view class="comments-tt">新鲜评论 ({{item.group.comment_count-topComments.length}})</view>
+            <block wx:for="{{recentComments}}" wx:key="{{item.id}}">
+                <view class="comments-item">
+                    <image class="avatar" src="{{item.avatar_url}}"></image>
+                    <view class="comments-con bdr-top">
+                        <view class="comments-hd">
+                            <view class="username">
+                                {{item.user_name}}
+                                <!-- 作品与粉丝 -->
+                                <view class="date">{{item.create_time}}</view>
+                            </view>
+                            <view class="btn btn-digg">
+                                <text class="btn-text">{{item.digg_count}}</text>
+                            </view>
+                        </view>
+                        <view class="comments-bd">
+                            {{item.text}}
+                        </view>
+                    </view>
+                </view>
+            </block>
+        </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="loadMore" wx:if="{{ !isOver&&hasMore}}">
+        <view></view>
+        <view></view>
+        <view></view>
+        <view></view>
+        <view></view> 数据加载中...
+    </view>
 </view>
